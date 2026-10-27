@@ -30,7 +30,16 @@ callbutton.addEventListener("click", function () {
         paymentTag.classList.add("paid");
     }
 });
+const profilebtn = document.querySelector(".profile-btn");
+const profiledropdown = document.querySelector(".profile-dropdown")
 
+profilebtn.addEventListener("click", function () {
+    if (profiledropdown.style.display === "block") {
+        profiledropdown.style.display = "none";
+    } else {
+        profiledropdown.style.display = "block";
+    }
+});
 
 
 
