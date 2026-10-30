@@ -1,3 +1,5 @@
+const notyf = new Notyf();
+
 const loginForm = document.querySelector("#login-form")
 
 loginForm.addEventListener("submit", async function (event) {
@@ -6,19 +8,34 @@ loginForm.addEventListener("submit", async function (event) {
     const email = document.querySelector("#login-email").value.trim();
     const password = document.querySelector("#login-password").value;
 
-    const {data , error} = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: password
     });
 
     if (error) {
         console.error("Login error:", error);
-        alert(error.message);
+        notyf.error(error.message);
         return;
     }
-     alert("Login successful!");
 
-     console.log("Logged-in user:", data.user);
+    const { data: registrationData, error: registrationError } =
+        await supabaseClient.rpc("register_student");
 
-     window.location.href = "user-dashboard.html";
+    if (registrationError) {
+        console.error("registration update error:", registrationError);
+        notyf.error("student registration status update nahi ho saka.");
+        return;
+    }
+
+    if (registrationData !== true) {
+        notyf.error("student record match nhi hua ya pehle register ho chuka he.");
+        return;
+    }
+
+    notyf.success("Login successful!");
+    
+    console.log("Logged-in user:", data.user);
+
+    window.location.href = "user-dashboard.html";
 });

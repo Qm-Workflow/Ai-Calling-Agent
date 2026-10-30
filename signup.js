@@ -42,7 +42,13 @@ signupForm.addEventListener("submit", async function (event) {
     const { data: authData, error: authError } =
     await supabaseClient.auth.signUp({
         email: email,
-        password: password
+        password: password,
+        options: {
+            data: {
+                student_name: studentname,
+                roll_number: studentrollno
+            }
+        }
     });
     
     if(authError) {
@@ -57,5 +63,5 @@ signupForm.addEventListener("submit", async function (event) {
     console.log("roll number:", studentrollno);
     console.log("email:", email)
 
-
+    window.location.href= "login.html"
 });

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>School Fee Dashboard</title>
     <link rel="stylesheet" href="user-dashboard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 </head>
 
 <body>
@@ -17,6 +18,8 @@
             <a href="">Students</a>
             <a href="">Fees</a> -->
             <div class="profile-wrapper">
+                <span id="profile-name"></span>
+                
                 <button class="profile-btn" aria-label="Profile">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4
@@ -26,8 +29,7 @@
                 </button>
                 <div class="profile-dropdown">
                     <a href="profile.html">Profile</a>
-                    <a href="login.html">Login</a>
-                    <a href="signup.html">Signup</a>
+                    <button id="logout-btn" type="button">Logout</button>
                 </div>
             </div>
         </div>
@@ -42,11 +44,14 @@
 
         <p class="m-f">Monthly Fee: Rs. 5000</p>
 
-        <p class="p-s">Payment Status: </p>
+        <p class="p-s">Payment Status: paid </p>
 
         <button id="callparent-btn">Call Parent</button>
 
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="user-dashboard.js"></script>
 </body>
 
