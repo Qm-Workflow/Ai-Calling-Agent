@@ -1,4 +1,13 @@
+const notyf = new Notyf({
+    position: {
+        x: "center",
+        y: "top"
+    }
+});
+
 const signupForm = document.querySelector("#signup-form");
+const signupButton = document.querySelector(".signup-btn");
+const pageLoader = document.querySelector("#page-loader");
 
 signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -10,58 +19,68 @@ signupForm.addEventListener("submit", async function (event) {
     const confirmpassword = document.querySelector("#confirmpassword").value
 
     if (password !== confirmpassword) {
-        alert("password does not match");
+        notyf.error("password does not match");
         return;
     }
 
-    const { data, error } = await supabaseClient.rpc(
-        "verify_student",
-        {
-            p_student_name: studentname,
-            p_roll_number: studentrollno
+    signupButton.disabled = true;
+    signupButton.textContent = "Verifying Student...";
+
+    try {
+        const { data, error } = await supabaseClient.rpc
+            ("verify_student",
+                {
+                    p_student_name: studentname,
+                    p_roll_number: studentrollno
+                }
+            );
+
+        if (error) {
+            console.error("verification error:", error);
+            notyf.error("Student Verification NAhi Ho Skhti. Please Try Again.");
+            return;
         }
-    );
 
-    if (error) {
-        console.error("verification error:", error);
-        alert("student verification nhi ho saki. please try again.");
-        return;
-    }
-
-    console.log("Student name sent:", studentname);
-    console.log("Roll number sent:", studentrollno);
-    console.log("Function returned:", data);
-
-    if (data !== true) {
-        alert("please enter correct student name and roll number.");
-        return;
-    }
-
-    alert("student verified successfully!");
-
-    const { data: authData, error: authError } =
-    await supabaseClient.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-            data: {
-                student_name: studentname,
-                roll_number: studentrollno
-            }
+        if (data !== true) {
+            notyf.error("Please enter correct student name and roll number.");
+            return;
         }
-    });
-    
-    if(authError) {
-        console.error("signup error:", authError);
-        alert(authError.message);
-        return;
+
+        console.log("Student verified successfully!");
+
+        signupButton.textContent = "Creating Account...";
+
+        const { data: authData, error: authError } =
+            await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        student_name: studentname,
+                        roll_number: studentrollno
+                    }
+                }
+            });
+
+        if (authError) {
+            console.error("signup error:", authError);
+            notyf.error(authError.message);
+            return;
+        }
+
+        console.log("Account Created:", authData);
+
+        pageLoader.classList.add("active");
+
+        window.location.href = "login.html";
+
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        notyf.error("kuch masla hua please dobara try karein.");
+    } finally {
+        if (!pageLoader.classList.contains("active")) {
+            signupButton.disabled = false;
+            signupButton.textContent = "Create Account";
+        }
     }
-    
-    alert("account created successfully!");
-
-    console.log("student name;", studentname);
-    console.log("roll number:", studentrollno);
-    console.log("email:", email)
-
-    window.location.href= "login.html"
 });
